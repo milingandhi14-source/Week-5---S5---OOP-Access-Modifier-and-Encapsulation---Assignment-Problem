@@ -1,0 +1,93 @@
+public class p2 {
+
+    static String classifyAccess(String fieldModifier,
+                                 String accessorContext) {
+
+        if (fieldModifier.equals("private")) {
+            if (accessorContext.equals("SAME_CLASS")) {
+                return "ALLOWED";
+            }
+            return "DENIED";
+        }
+
+        if (fieldModifier.equals("default")) {
+            if (accessorContext.equals("SAME_CLASS") ||
+                accessorContext.equals("SAME_PACKAGE")) {
+                return "ALLOWED";
+            }
+            return "DENIED";
+        }
+
+        if (fieldModifier.equals("protected")) {
+
+            if (accessorContext.equals("SAME_CLASS") ||
+                accessorContext.equals("SAME_PACKAGE")) {
+                return "ALLOWED";
+            }
+
+            if (accessorContext.equals(
+                    "SUBCLASS_DIFFERENT_PACKAGE_OWN_TYPE")) {
+                return "ALLOWED";
+            }
+
+            if (accessorContext.equals(
+                    "SUBCLASS_DIFFERENT_PACKAGE_PARENT_TYPE")) {
+                return "DENIED";
+            }
+
+            return "DENIED";
+        }
+
+        if (fieldModifier.equals("public")) {
+            return "ALLOWED";
+        }
+
+        return "DENIED";
+    }
+
+    static String describeContext(String accessorContext) {
+
+        String[] words = accessorContext.split("_");
+
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < words.length; i++) {
+
+            String word = words[i].toLowerCase();
+
+            word = Character.toUpperCase(word.charAt(0))
+                    + word.substring(1);
+
+            result.append(word);
+
+            if (i < words.length - 1) {
+                result.append(" ");
+            }
+        }
+
+        return result.toString();
+    }
+
+    public static void main(String[] args) {
+
+        System.out.println(
+            classifyAccess(
+                "protected",
+                "SUBCLASS_DIFFERENT_PACKAGE_OWN_TYPE"
+            )
+        );
+
+        System.out.println(
+            classifyAccess(
+                "protected",
+                "SUBCLASS_DIFFERENT_PACKAGE_PARENT_TYPE"
+            )
+        );
+
+        System.out.println(
+            describeContext(
+                "SUBCLASS_DIFFERENT_PACKAGE_OWN_TYPE"
+            )
+        );
+    }
+}
